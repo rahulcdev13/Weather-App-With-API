@@ -1,47 +1,120 @@
+import React, { useState } from "react";
+import { useEffect } from "react";
 
-const Weatherdata = [
-    {
-        "coord": {
-          "lon": 73.8553,
-          "lat": 18.5196
-        },
-        "weather": [
-          {
-            "id": 802,
-            "main": "Clouds",
-            "description": "scattered clouds",
-            "icon": "03n"
-          }
-        ],
-        "base": "stations",
-        "main": {
-          "temp": 295.63,
-          "feels_like": 296.18,
-          "temp_min": 295.63,
-          "temp_max": 295.63,
-          "pressure": 1008,
-          "humidity": 86,
-          "sea_level": 1008,
-          "grnd_level": 946
-        },
-        "visibility": 10000,
-        "wind": {
-          "speed": 3.72,
-          "deg": 256,
-          "gust": 7.15
-        },
-        "clouds": {
-          "all": 31
-        },
-        "dt": 1653694814,
-        "sys": {
-          "country": "IN",
-          "sunrise": 1653697679,
-          "sunset": 1653744959
-        },
-        "timezone": 19800,
-        "id": 1259229,
-        "name": "Pune",
-        "cod": 200
+
+const WeatherCard = ({ tempInfo }) => {
+
+  const [weatherState, setWeatherState] = useState("");
+
+  const {
+    temp,
+    humidity,
+    pressure,
+    weathermood,
+    name,
+    speed,
+    country,
+    sunset
+  } = tempInfo;
+
+  let sec = sunset;
+  let date = new Date(sec * 100);
+  // let ampm = 12 ? 'pm' : 'am';
+  // console.log(ampm);
+  let timestr = `${date.getHours()}:${date.getMinutes()}`;
+
+  useEffect(() => {
+    if (weathermood) {
+      switch (weathermood) {
+        case "Clouds":
+          setWeatherState("wi-day-cloudy");
+          break;
+        case "Haze":
+          setWeatherState("wi-fog");
+          break;
+        case "Clear":
+          setWeatherState("wi-day-sunny");
+          break;
+          case "Wind":
+          setWeatherState("wi-windy");
+          break;
+          case "Mist":
+          setWeatherState("wi-dust");
+          break;
+          
+
+        default:
+          setWeatherState("wi-day-sunny");
+          break;
       }
-];
+    }
+
+  }, [weathermood])
+
+  return (
+    <>
+      <article className='widget'>
+        <div className='weatherIcon'>
+          <i className={`wi ${weatherState}`}></i>
+        </div>
+        <div className='weatherInfo'>
+          <div className='temperature'>
+            <span>{temp}&#x2103;</span>
+          </div>
+          <div className='description'>
+            <div className='weatherCondition'>
+              {weathermood}
+            </div>
+            <div className='place'>
+              {name},{country}
+            </div>
+          </div>
+        </div>
+        <div className='date'>
+          {new Date().toLocaleString()}
+        </div>
+
+        {/* our four colomn section */}
+        <div className='extra-temp'>
+
+          <div className='temp-info-minmax'>
+            <div className='two-sided-section'>
+              <p><i className='wi wi-day-sunny'></i></p>
+              <p className='extra-info-leftside'>
+                {timestr} PM<br />
+                Sunset
+              </p>
+            </div>
+            <div className='two-sided-section'>
+              <p><i className={"wi wi-humidity"}></i></p>
+              <p className='extra-info-leftside'>
+                {humidity} <br />
+                Humidity
+              </p>
+            </div>
+          </div>
+
+          <div className='weather-extra-info'>
+            <div className='two-sided-section'>
+              <p><i className={"wi wi-rain"}></i></p>
+              <p className='extra-info-leftside'>
+                {pressure} <br />
+                Pressure
+              </p>
+            </div>
+            <div className='two-sided-section'>
+              <p><i className={"wi wi-strong-wind"}></i></p>
+              <p className='extra-info-leftside'>
+                {speed}<br />
+                Speed
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </article>
+    </>
+  )
+}
+export default WeatherCard
